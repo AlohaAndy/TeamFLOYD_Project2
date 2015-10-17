@@ -1,0 +1,6 @@
+hello
+goodbye
+animals
+turtle
+really
+towel

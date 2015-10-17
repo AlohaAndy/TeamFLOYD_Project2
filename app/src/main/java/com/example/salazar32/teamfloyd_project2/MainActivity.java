@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View v) {
-        startActivity(new Intent(MainActivity.this, Difficulty.class));
+        startActivity(new Intent(MainActivity.this, Gameplay.class));
     }
 
     public void clickCredits(View v) {
