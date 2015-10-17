@@ -3,6 +3,7 @@ package com.example.salazar32.teamfloyd_project2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.widget.TextView;
 import java.io.BufferedReader;
@@ -137,6 +138,28 @@ public class Gameplay extends AppCompatActivity {
             wordBank[i] = wordBank[i].replaceAll("[^\\w]", "");
         }
         scrambleView.setText(scramble(r, wordBank[2]));
+    }
+
+    public void check (View v){
+
+    }
+
+    public void clear (View v){
+
+    }
+
+    public void skip (View v){
+
+    }
+
+    public void onClick (View v){
+        TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
+        unscrambleView.setText("");
+        unscrambleView.setCursorVisible(true);
+        unscrambleView.setFocusableInTouchMode(true);
+        unscrambleView.setInputType(InputType.TYPE_CLASS_TEXT);
+        unscrambleView.requestFocus();
+
     }
 }
 
