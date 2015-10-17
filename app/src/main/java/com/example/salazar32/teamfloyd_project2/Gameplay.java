@@ -10,10 +10,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 
 public class Gameplay extends AppCompatActivity {
+    List<String> wordBank;
+    Random r = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,6 @@ public class Gameplay extends AppCompatActivity {
     }
 
     public void clickEasy(View v) {
-        Random r = new Random();
         // show the gameplay layout after choosing a difficulty
         setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
@@ -65,15 +69,11 @@ public class Gameplay extends AppCompatActivity {
         // create a temp variable to convert the buffer to a string(s)
         String temp = sb.toString();
 
-        // convert the strings into a string array and...
-        String[] wordBank = temp.split("\\s+");
-        // give them proper indexes
-        for (int i = 0; i < wordBank.length; i++) {
-            // we also replace all unnecessary characters with whitespace
-            wordBank[i] = wordBank[i].replaceAll("[^\\w]", "");
-        }
+        // here we are creating proper indexes for the strings by separating the words
+        wordBank = Arrays.asList(temp.split("\\s+"));
+
         // display the first scrambled word of the array into the text view
-        scrambleView.setText(scramble(r, wordBank[0]));
+        scrambleView.setText(scramble(r, wordBank.get(0)));
     }
 
     /**
@@ -81,11 +81,11 @@ public class Gameplay extends AppCompatActivity {
      * difference is that it uses different word banks.  To properly reference text files in
      * Android Studio, create a new text file inside res/raw folder.  Also words should be all lower
      * case.
-     *
-     */
+     **/
+
+
 
     public void clickMedium(View v) {
-        Random r = new Random();
         setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
 
@@ -93,6 +93,7 @@ public class Gameplay extends AppCompatActivity {
         StringBuffer sb = new StringBuffer();
         InputStream is = this.getResources().openRawResource(R.raw.easylist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
         if (is != null) {
             try {
                 while ((data = br.readLine()) != null) {
@@ -104,15 +105,11 @@ public class Gameplay extends AppCompatActivity {
             }
         }
         String temp = sb.toString();
-        String[] wordBank = temp.split("\\s+");
-        for (int i = 0; i < wordBank.length; i++) {
-            wordBank[i] = wordBank[i].replaceAll("[^\\w]", "");
-        }
-        scrambleView.setText(scramble(r, wordBank[1]));
+        wordBank = Arrays.asList(temp.split("\\s+"));
+        scrambleView.setText(scramble(r, wordBank.get(0)));
     }
 
     public void clickHard(View v) {
-        Random r = new Random();
         setContentView(R.layout.gameplay);
         setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
@@ -133,11 +130,8 @@ public class Gameplay extends AppCompatActivity {
             }
         }
         String temp = sb.toString();
-        String[] wordBank = temp.split("\\s+");
-        for (int i = 0; i < wordBank.length; i++) {
-            wordBank[i] = wordBank[i].replaceAll("[^\\w]", "");
-        }
-        scrambleView.setText(scramble(r, wordBank[2]));
+        wordBank = Arrays.asList(temp.split("\\s+"));
+        scrambleView.setText(scramble(r, wordBank.get(0)));
     }
 
     public void check (View v){
@@ -145,16 +139,22 @@ public class Gameplay extends AppCompatActivity {
     }
 
     public void clear (View v){
+        TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
+        unscrambleView.setText("");
 
     }
 
     public void skip (View v){
+        TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
 
+        for (ListIterator<String> i = wordBank.listIterator(); i.hasNext();) {
+            String item = i.next();
+            scrambleView.setText(scramble(r, item));
+        }
     }
 
     public void onClick (View v){
         TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
-        unscrambleView.setText("");
         unscrambleView.setCursorVisible(true);
         unscrambleView.setFocusableInTouchMode(true);
         unscrambleView.setInputType(InputType.TYPE_CLASS_TEXT);
