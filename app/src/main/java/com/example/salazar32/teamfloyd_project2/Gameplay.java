@@ -1,26 +1,29 @@
 package com.example.salazar32.teamfloyd_project2;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
 
 
 public class Gameplay extends AppCompatActivity {
     List<String> wordBank;
     Random r = new Random();
+
     int i = 0; // our global counter for the skip method
+    int myScore = 0; // our score keeping
+    int strikes = 0; // number of strikes (wrong answers)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class Gameplay extends AppCompatActivity {
 
     }
 
-    public static String scramble(Random random, String inputString) {
+    public String scramble(Random random, String inputString) {
         // convert string to char array
         char a[] = inputString.toCharArray();
         // scramble letters
@@ -94,7 +97,7 @@ public class Gameplay extends AppCompatActivity {
 
         String data = "";
         StringBuffer sb = new StringBuffer();
-        InputStream is = this.getResources().openRawResource(R.raw.easylist);
+        InputStream is = this.getResources().openRawResource(R.raw.medlist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         if (is != null) {
@@ -119,7 +122,7 @@ public class Gameplay extends AppCompatActivity {
 
         String data = "";
         StringBuffer sb = new StringBuffer();
-        InputStream is = this.getResources().openRawResource(R.raw.easylist);
+        InputStream is = this.getResources().openRawResource(R.raw.hardlist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         if (is != null) {
@@ -138,45 +141,88 @@ public class Gameplay extends AppCompatActivity {
     }
 
     public void check (View v){
-        TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
         TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
-
+        // toasts are pop up notifications, show "correct!" when answer is right
         if (unscrambleView.getText().toString().equals(wordBank.get(i))) {
-            unscrambleView.setText("Correct!");
+            unscrambleView.setText("");
+            Context context = getApplicationContext();
+            CharSequence text = "Correct!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            // skip to next word when correct
+            skip(v);
+            myScore++;
         }
         else {
-            unscrambleView.setText("");
-        }
+            // show "wrong!" when answer is wrong
+            // you have a limited amount of attempts per word before it gets marked wrong
+            if (strikes == 3) {
+                skip(v);
+                strikes = 0;
+            }
+            else {
+                unscrambleView.setText("");
+                Context context = getApplicationContext();
+                CharSequence text = "Wrong!";
+                int duration = Toast.LENGTH_SHORT;
 
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                strikes++;
+            }
+        }
     }
 
     public void clear (View v){
+        // clear the text view
         TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
         unscrambleView.setText("");
 
     }
 
-    public void skip (View v) {
-        i++;
-        TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
-        TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
-        String item = wordBank.get(i);
-        scrambleView.setText(scramble(r, item));
-        unscrambleView.setText("");
+    public void gameOver(View v) {
 
-        if ( i == wordBank.size() -1) {
-            // temp code, we need to show the score if player skips all the way to the end
-            i = 0;
+        setContentView(R.layout.gameover);
+        TextView scoreView = (TextView) findViewById(R.id.score);
+
+        // scoring takes the amount you got right and gives you a complement based on how you did
+        if (myScore == wordBank.size() - 1) {
+            scoreView.setText("Nice job!");
+        }
+        else if (myScore < wordBank.size() / 2) {
+            scoreView.setText("Below average!");
+        }
+        else if (myScore > wordBank.size() / 2 && myScore != wordBank.size() - 1) {
+            scoreView.setText("Not bad!");
+        }
+    }
+
+    public void skip (View v) {
+        // this method is used to skip
+        if ( i == wordBank.size() - 1) {
+            gameOver(v);
+        }
+        else {
+            i++;
+            TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+            TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
+            String item = wordBank.get(i);
+            scrambleView.setText(scramble(r, item));
+            unscrambleView.setText("");
         }
     }
 
     public void onClick (View v){
+        // this method handles editing the unscramble text view
         TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
         unscrambleView.setCursorVisible(true);
         unscrambleView.setFocusableInTouchMode(true);
         unscrambleView.setInputType(InputType.TYPE_CLASS_TEXT);
         unscrambleView.requestFocus();
-
     }
 }
 

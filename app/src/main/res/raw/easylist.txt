@@ -4,3 +4,7 @@ animals
 turtle
 really
 towel
+kitten
+chicken
+rainbow
+anagram
