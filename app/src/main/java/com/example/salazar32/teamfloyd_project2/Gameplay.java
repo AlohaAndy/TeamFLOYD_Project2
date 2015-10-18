@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -19,10 +20,12 @@ import java.util.Random;
 public class Gameplay extends AppCompatActivity {
     List<String> wordBank;
     Random r = new Random();
+    int i = 0; // our global counter for the skip method
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // we see the difficulty option layout before the gameplay
         setContentView(R.layout.difficulty);
 
@@ -144,12 +147,14 @@ public class Gameplay extends AppCompatActivity {
 
     }
 
-    public void skip (View v){
+    public void skip (View v) {
+        i++;
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
-
-        for (ListIterator<String> i = wordBank.listIterator(); i.hasNext();) {
-            String item = i.next();
-            scrambleView.setText(scramble(r, item));
+        String item = wordBank.get(i);
+        scrambleView.setText(scramble(r, item));
+        if ( i == wordBank.size() -1) {
+            // temp code, we need to show the score if player skips all the way to the end
+            i = 0;
         }
     }
 
