@@ -138,6 +138,15 @@ public class Gameplay extends AppCompatActivity {
     }
 
     public void check (View v){
+        TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+        TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
+
+        if (unscrambleView.getText().toString().equals(wordBank.get(i))) {
+            unscrambleView.setText("Correct!");
+        }
+        else {
+            unscrambleView.setText("");
+        }
 
     }
 
@@ -150,8 +159,11 @@ public class Gameplay extends AppCompatActivity {
     public void skip (View v) {
         i++;
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+        TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
         String item = wordBank.get(i);
         scrambleView.setText(scramble(r, item));
+        unscrambleView.setText("");
+
         if ( i == wordBank.size() -1) {
             // temp code, we need to show the score if player skips all the way to the end
             i = 0;
