@@ -24,6 +24,7 @@ public class Gameplay extends AppCompatActivity {
     int i = 0; // our global counter for the skip method
     int myScore = 0; // our score keeping
     int strikes = 0; // number of strikes (wrong answers)
+    int anagrams = 0; // number of anagrams remaining
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class Gameplay extends AppCompatActivity {
         // show the gameplay layout after choosing a difficulty
         setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+        TextView anagramsView = (TextView) findViewById(R.id.anagrams);
+
 
         String data = "";
         StringBuffer sb = new StringBuffer();
@@ -77,9 +80,11 @@ public class Gameplay extends AppCompatActivity {
 
         // here we are creating proper indexes for the strings by separating the words
         wordBank = Arrays.asList(temp.split("\\s+"));
-
+        anagrams = wordBank.size(); // number of anagrams left
         // display the first scrambled word of the array into the text view
         scrambleView.setText(scramble(r, wordBank.get(0)));
+        anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
+
     }
 
     /**
@@ -94,6 +99,7 @@ public class Gameplay extends AppCompatActivity {
     public void clickMedium(View v) {
         setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+        TextView anagramsView = (TextView) findViewById(R.id.anagrams);
 
         String data = "";
         StringBuffer sb = new StringBuffer();
@@ -112,13 +118,15 @@ public class Gameplay extends AppCompatActivity {
         }
         String temp = sb.toString();
         wordBank = Arrays.asList(temp.split("\\s+"));
+        anagrams = wordBank.size();
         scrambleView.setText(scramble(r, wordBank.get(0)));
+        anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
     }
 
     public void clickHard(View v) {
         setContentView(R.layout.gameplay);
-        setContentView(R.layout.gameplay);
         TextView scrambleView = (TextView) findViewById(R.id.scrambleView);
+        TextView anagramsView = (TextView) findViewById(R.id.anagrams);
 
         String data = "";
         StringBuffer sb = new StringBuffer();
@@ -137,11 +145,15 @@ public class Gameplay extends AppCompatActivity {
         }
         String temp = sb.toString();
         wordBank = Arrays.asList(temp.split("\\s+"));
+        anagrams = wordBank.size();
         scrambleView.setText(scramble(r, wordBank.get(0)));
+        anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
     }
 
     public void check (View v){
         TextView unscrambleView = (TextView) findViewById(R.id.unscrambleView);
+        TextView anagramsView = (TextView) findViewById(R.id.anagrams);
+
         // toasts are pop up notifications, show "correct!" when answer is right
         if (unscrambleView.getText().toString().equals(wordBank.get(i))) {
             unscrambleView.setText("");
@@ -155,6 +167,10 @@ public class Gameplay extends AppCompatActivity {
             // skip to next word when correct
             skip(v);
             myScore++;
+            --anagrams;
+            ++anagrams;
+            anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
+
         }
         else {
             // show "wrong!" when answer is wrong
@@ -162,6 +178,9 @@ public class Gameplay extends AppCompatActivity {
             if (strikes == 3) {
                 skip(v);
                 strikes = 0;
+                --anagrams;
+                ++anagrams;
+                anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
             }
             else {
                 unscrambleView.setText("");
@@ -185,24 +204,15 @@ public class Gameplay extends AppCompatActivity {
     }
 
     public void gameOver(View v) {
-
+        // show a score at the end
         setContentView(R.layout.gameover);
         TextView scoreView = (TextView) findViewById(R.id.score);
+        scoreView.setText("you scored a " + myScore);
 
-        // scoring takes the amount you got right and gives you a complement based on how you did
-        if (myScore == wordBank.size() - 1) {
-            scoreView.setText("Nice job!");
-        }
-        else if (myScore < wordBank.size() / 2) {
-            scoreView.setText("Below average!");
-        }
-        else if (myScore > wordBank.size() / 2 && myScore != wordBank.size() - 1) {
-            scoreView.setText("Not bad!");
-        }
     }
-
     public void skip (View v) {
         // this method is used to skip
+        TextView anagramsView = (TextView) findViewById(R.id.anagrams);
         if ( i == wordBank.size() - 1) {
             gameOver(v);
         }
@@ -213,6 +223,8 @@ public class Gameplay extends AppCompatActivity {
             String item = wordBank.get(i);
             scrambleView.setText(scramble(r, item));
             unscrambleView.setText("");
+            --anagrams;
+            anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
         }
     }
 

@@ -76,4 +76,12 @@
         android:background="#6bb7ff"
         android:textColor="#b2fff8" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/anagrams"
+        android:textColor="#8cf3f7"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/buttonCheck" />
+
 </RelativeLayout>
