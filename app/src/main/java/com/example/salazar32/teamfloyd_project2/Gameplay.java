@@ -164,11 +164,9 @@ public class Gameplay extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+            myScore++;
             // skip to next word when correct
             skip(v);
-            myScore++;
-            --anagrams;
-            ++anagrams;
             anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
 
         }
@@ -178,8 +176,6 @@ public class Gameplay extends AppCompatActivity {
             if (strikes == 3) {
                 skip(v);
                 strikes = 0;
-                --anagrams;
-                ++anagrams;
                 anagramsView.setText(anagrams + " out of " + wordBank.size() + " remaining");
             }
             else {
